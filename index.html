@@ -55,8 +55,9 @@
 
                 // The Method being used is "GET" (Default Option)
                 const endpoint = base_service + "/username_available/"
+
                 try{
-                const response = await fetch(endpoint + e.value)
+                const response = await fetch(endpoint + e.value);
 
                 if (response.status === SUCCESS_200) {
                     const data = await response.json();
@@ -64,7 +65,7 @@
                         goodText(outcome);
                     } else {
                         badText(outcome);
-                    };
+                    }
                 } else if (response.status === NOT_FOUND_404) {
                     badText(outcome);
                 } else { // Other response code
