@@ -14,6 +14,7 @@ class Attr {
     }
 };
 
+
 class Fighter {
     constructor(name) {
         this.name = name;
@@ -31,27 +32,42 @@ class Fighter {
         Dex: ${this.attrList[1].value}
         `;
     }
+    getValue(attrName) {
+        const a = this.attrList.find(a => a.name.toLowerCase() === attrName.toLowerCase());
+        return a ? a.value : 0;
+    }
+    setValue(attrName, value) {
+        const a = this.attrList.find(a => a.name.toLowerCase() === attrName.toLowerCase());
+        a.value = value;
+    }
     attack(who) {
-        const myStr = this.attrList[0].value;
-        const myDex = this.attrList[1].value;
-        const theirDex = who.attrList[1].value;
+        const myStr = this.getValue("strength");
+        const myDex = this.getValue("dexterity");
+        const theirDex = who.getValue("dexterity");
         const chanceOfSuccess = (50 + (myDex - theirDex)) / 100;
         if (Math.random() >= chanceOfSuccess) {
-            const damage =  Math.ceil(myStr * Math.random());
+            const damage = Math.ceil(myStr * Math.random());
             who.health -= damage;
-            return "The " + this.name + " hits the " + who.name + " for " + damage + " points of damage.";
+            return this.name + " hits " + who.name + " for " + damage + " points of damage.";
         }
-        return "The " + this.name + " missed the " + who.name + " doing no damage.";
+        return this.name + " missed " + who.name + " doing no damage.";
+        
+    }
+};
 
+class Hero extends Fighter {
+    constructor(name) {
+        super(name);
+        // Give Hero the Advantage
+        this.health = 200;
+        this.setValue("strength", 75);
+        this.setValue("dexterity", 75);
     }
 };
 
 class FightingGame {
-    constructor() {
-        this.fighters = [
-            new Fighter("Hero"),   // 0
-            new Fighter("Villian") // 1
-        ];
+    constructor(fighters) {
+        this.fighters = fighters;
     }
     status() {
         return this.fighters.map(f => f.status()).join("\n-----")
@@ -74,11 +90,16 @@ class FightingGame {
         if (b.health > 0) {
             victor = b
         }
-        output.push("Finish the " + victor.name + " Wins!!!");
+        output.push("Finish " + victor.name + " Wins!!!");
         return output.join("\n");
     }
 };
-fg = new FightingGame();
+
+// Testing
+const hero = new Hero("Hero");
+const villian = new Fighter("Villian");
+
+const fg = new FightingGame([hero, villian]);
 console.log(fg.status());
-console.log(fg.fight(fg.fighters[0], fg.fighters[1]));
+console.log(fg.fight(hero, villian));
 console.log(fg.status());
