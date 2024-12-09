@@ -1,0 +1,84 @@
+<head>
+    <style>
+        h1 {
+            color: darkgoldenrod;
+        }
+
+        #username {
+            color: darkgreen;
+        }
+
+        .big {
+            font-size: 2rem;
+        }
+
+        body {
+            background-color: darkgray;
+        }
+
+        .outcome {
+            color: lightgreen;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Register</h1>
+    <div>
+        <input type="text" id="username" placeholder="User Name">
+        <span class="outcome">Good</span>
+    </div>
+    <button id="signup" class="big">Sign-Up</button>
+    <script>
+        function setText(element, text, color) {
+            element.innerText = text;
+            element.style.color = color;
+        };
+        function badText(element) {
+            setText(element, "BAD", "red");
+        };
+        function goodText(element) {
+            setText(element, "GOOD", "green");
+        };
+        function warnText(element) {
+            setText(element, text, "darkgoldenrod");
+        };
+        document.addEventListener("DOMContentLoaded", () => {
+            const SUCCESS_200 = 200;
+            const NOT_FOUND_404 = 404;
+            const base_service = "http://localhost:8083/api"; // endpoint base
+
+            const e = document.getElementById("username"); // not a selector
+            const outcome = document.querySelector(".outcome");
+
+            e.addEventListener("keyup", async () => {
+
+                // The Method being used is "GET" (Default Option)
+                const endpoint = base_service + "/username_available/"
+                try{
+                const response = await fetch(endpoint + e.value)
+
+                if (response.status === SUCCESS_200) {
+                    const data = await response.json();
+                    if (data.available) { // already a boolean
+                        goodText(outcome);
+                    } else {
+                        badText(outcome);
+                    };
+                } else if (response.status === NOT_FOUND_404) {
+                    badText(outcome);
+                } else { // Other response code
+                    warnText(outcome, response.status)
+                };
+            } catch (e){
+                warnText(outcome, e)
+            }
+            });
+            signup.addEventListener("click", ()=>{
+                window.location.href = "welcome.html";
+                const obj = { username: e.value };
+                localStorage.user = JSON.stringify(obj); // convert binary object to string
+            });
+        }); // end load
+    </script>
+</body>

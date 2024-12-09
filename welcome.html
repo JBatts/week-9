@@ -1,0 +1,8 @@
+<body>
+    <h1>Welcome <span class="who">?</span></h1>
+    <script>
+        const who = document.querySelector(".who");
+        const userObj = JSON.parse(localStorage.user) // cut text string up into parts (an Obj)
+        who.innerText = userObj.username;
+    </script>
+</body>
